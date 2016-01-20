@@ -1,3 +1,5 @@
+'use strict'
+
 var DSU_HORIZONTAL_RESOLUTION = 180
 var DSU_VERTICAL_RESOLUTION = 50
 var DSU_LED_ON_COLOR = 'hsla(0, 100%, 50%, 1)'
@@ -27,12 +29,12 @@ var ledHeight = canvasHeight / DSU_VERTICAL_RESOLUTION
 var ledRadius = Math.max(Math.min(0.65 * ledWidth, 0.65 * ledHeight), 1) / 2
 
 // draw random dots
-for (i = 0; i < DSU_HORIZONTAL_RESOLUTION * DSU_VERTICAL_RESOLUTION; i++) {
-  posX = i % DSU_HORIZONTAL_RESOLUTION
-  posY = Math.floor(i / DSU_HORIZONTAL_RESOLUTION)
-  centerX = (ledWidth / 2) + (posX * ledWidth)
-  centerY = (ledHeight / 2) + (posY * ledHeight)
-  bit = Math.floor(Math.random() * 1.15)
+for (var i = 0; i < DSU_HORIZONTAL_RESOLUTION * DSU_VERTICAL_RESOLUTION; i++) {
+  var posX = i % DSU_HORIZONTAL_RESOLUTION
+  var posY = Math.floor(i / DSU_HORIZONTAL_RESOLUTION)
+  var centerX = (ledWidth / 2) + (posX * ledWidth)
+  var centerY = (ledHeight / 2) + (posY * ledHeight)
+  var bit = Math.floor(Math.random() * 1.15)
   drawLED(context, centerX, centerY, ledRadius, bit)
 }
 
