@@ -39,38 +39,91 @@ var ledRadius = Math.max(Math.min(0.65 * ledWidth, 0.65 * ledHeight), 1) / 2
 // }
 
 // Scroll random dots!!
-var screen = []
-var randomness = 1.15;
-for (var y = 0; y < DSU_VERTICAL_RESOLUTION; y++) {
-  screen[y] = [];
-  for (var x = 0; x < DSU_HORIZONTAL_RESOLUTION; x++) {
-    screen[y][x] = Math.floor(Math.random() * randomness);
-  }
+var screen = makeEmptyScreenBuffer()
+var randomness = 1.15
+// for (var y = 0; y < DSU_VERTICAL_RESOLUTION; y++) {
+//   screen[y] = []
+//   for (var x = 0; x < DSU_HORIZONTAL_RESOLUTION; x++) {
+//     screen[y][x] = Math.floor(Math.random() * randomness)
+//   }
+// }
+for (var i = 0; i < DSU_HORIZONTAL_RESOLUTION * DSU_VERTICAL_RESOLUTION; i++) {
+  var posX = i % DSU_HORIZONTAL_RESOLUTION
+  var posY = Math.floor(i / DSU_HORIZONTAL_RESOLUTION)
+  var bit = Math.floor(Math.random() * 1.15)
+  screen[posY][posX] = bit
 }
 
-drawScreen(screen, context);
+drawScreen(screen, context)
 
 window.setInterval(function () {
-  shiftUp(screen, context);
-}, 250);
+  shiftDown(screen, context)
+}, 350);
+
+// Words
+var testString = 'Hello world!'
+
+var testStringArray = getStringCodePoints(testString)
+
+console.log(testStringArray)
+
+
+function makeEmptyScreenBuffer () {
+  var buffer = []
+  for (var y = 0; y < DSU_VERTICAL_RESOLUTION; y++) {
+    buffer[y] = []
+    for (var x = 0; x < DSU_HORIZONTAL_RESOLUTION; x++) {
+      buffer[y][x] = 0
+    }
+  }
+  return buffer
+}
+
+function getStringCodePoints (string) {
+  var array = []
+  string = string.trim().toUpperCase()
+
+  // Split the string on spaces
+  var words = string.split(' ')
+
+  // Convert a string into its code points
+  for (var i = 0; i < words.length; i++) {
+    var word = []
+    for (var j = 0; j < words[i].length; j++) {
+      word.push(words[i].charCodeAt(j))
+    }
+    array.push(word)
+  }
+  return array
+}
 
 function shiftUp (screen, context) {
-  var newRow = [];
+  var newRow = []
   for (var i = 0; i < DSU_HORIZONTAL_RESOLUTION; i++) {
-    newRow.push(Math.floor(Math.random() * randomness));
+    newRow.push(Math.floor(Math.random() * randomness))
   }
-  screen.shift();
-  screen.push(newRow);
-  drawScreen(screen, context);
+  screen.shift()
+  screen.push(newRow)
+  drawScreen(screen, context)
+}
+
+function shiftDown (screen, context) {
+  var newRow = []
+  for (var i = 0; i < DSU_HORIZONTAL_RESOLUTION; i++) {
+    newRow.push(Math.floor(Math.random() * randomness))
+  }
+  screen.unshift(newRow)
+  screen.pop()
+  drawScreen(screen, context)
 }
 
 function drawScreen (screen, ctx) {
   context.clearRect(0, 0, canvas.width, canvas.height);
   for (var y = 0; y < screen.length; y++) {
     for (var x = 0; x < screen[y].length; x++) {
-      var centerX = (ledWidth / 2) + (x * ledWidth);
-      var centerY = (ledHeight / 2) + (y * ledHeight);
-      drawLED(ctx, centerX, centerY, ledRadius, screen[y][x]);
+      var centerX = (ledWidth / 2) + (x * ledWidth)
+      var centerY = (ledHeight / 2) + (y * ledHeight)
+      drawLED(ctx, centerX, centerY, ledRadius, screen[y][x])
     }
   }
 }
