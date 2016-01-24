@@ -40,33 +40,30 @@ var ledRadius = Math.max(Math.min(0.65 * ledWidth, 0.65 * ledHeight), 1) / 2
 
 // Scroll random dots!!
 var screen = makeEmptyScreenBuffer()
+
 var randomness = 1.15
-// for (var y = 0; y < DSU_VERTICAL_RESOLUTION; y++) {
-//   screen[y] = []
-//   for (var x = 0; x < DSU_HORIZONTAL_RESOLUTION; x++) {
-//     screen[y][x] = Math.floor(Math.random() * randomness)
-//   }
+// for (var i = 0; i < DSU_HORIZONTAL_RESOLUTION * DSU_VERTICAL_RESOLUTION; i++) {
+//   var posX = i % DSU_HORIZONTAL_RESOLUTION
+//   var posY = Math.floor(i / DSU_HORIZONTAL_RESOLUTION)
+//   var bit = Math.floor(Math.random() * 1.15)
+//   screen[posY][posX] = bit
 // }
-for (var i = 0; i < DSU_HORIZONTAL_RESOLUTION * DSU_VERTICAL_RESOLUTION; i++) {
-  var posX = i % DSU_HORIZONTAL_RESOLUTION
-  var posY = Math.floor(i / DSU_HORIZONTAL_RESOLUTION)
-  var bit = Math.floor(Math.random() * 1.15)
-  screen[posY][posX] = bit
-}
+
+// drawScreen(screen, context)
+
+// Words
+screen = drawLineOnScreen(screen, 'San Jose', 1, 3)
+screen = drawLineOnScreen(screen, '3, 7 min', 127, 3)
+screen = drawLineOnScreen(screen, '10 car train', 1, 13)
+screen = drawLineOnScreen(screen, 'lake tahoe', 1, 30)
+screen = drawLineOnScreen(screen, '5, 10 min', 119, 30)
+screen = drawLineOnScreen(screen, '9 car train', 1, 40)
 
 drawScreen(screen, context)
 
-window.setInterval(function () {
-  shiftDown(screen, context)
-}, 350);
-
-// Words
-var testString = 'Hello world!'
-
-var testStringArray = getStringCodePoints(testString)
-
-console.log(testStringArray)
-
+// window.setInterval(function () {
+//   shiftDown(screen, context)
+// }, 350);
 
 function makeEmptyScreenBuffer () {
   var buffer = []
@@ -77,6 +74,25 @@ function makeEmptyScreenBuffer () {
     }
   }
   return buffer
+}
+
+function drawLineOnScreen (screen, string, x, y) {
+  var dots = getDots(string)
+  return drawDotsOnScreen(screen, dots, x, y)
+}
+
+function drawDotsOnScreen (screen, dots, x, y) {
+  for (var m = 0; m < dots.length; m++) {
+    for (var n = 0; n < dots[m].length; n++) {
+      screen[y + n][x + m] += dots[m][n]
+    }
+  }
+  return screen
+}
+
+function getDots (string) {
+  var array = getStringCodePoints(string)
+  return getDotsFromCodePoints(array)
 }
 
 function getStringCodePoints (string) {
@@ -95,6 +111,25 @@ function getStringCodePoints (string) {
     array.push(word)
   }
   return array
+}
+
+function getDotsFromCodePoints (array) {
+  var line = []
+  for (var i = 0; i < array.length; i++) {
+    var word = array[i]
+    var length = 0
+    for (var j = 0; j < word.length; j++) {
+      var codePoint = word[j]
+      var dotMatrix = FONT[codePoint]
+      if (dotMatrix.length === 0) {
+        dotMatrix = FONT.default
+      }
+      length += dotMatrix.length
+      line = line.concat(dotMatrix, FONT.kerning)
+    }
+    line = line.concat(FONT[32])
+  }
+  return line
 }
 
 function shiftUp (screen, context) {
