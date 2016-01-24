@@ -73,14 +73,13 @@ window.setInterval(function () {
   makeScreen()
 }, 20000)
 
-
+// Creates an empty two-dimensional array of length
+// of the vertical dimension of the screen (this makes)
+// it easier to do vertical scrolling.
 function makeEmptyScreenBuffer () {
-  var buffer = []
-  for (var y = 0; y < DSU_VERTICAL_RESOLUTION; y++) {
-    buffer[y] = []
-    for (var x = 0; x < DSU_HORIZONTAL_RESOLUTION; x++) {
-      buffer[y][x] = 0
-    }
+  var buffer = Array(DSU_VERTICAL_RESOLUTION)
+  for (var i = 0; i < buffer.length; i++) {
+    buffer[i] = Array(DSU_HORIZONTAL_RESOLUTION)
   }
   return buffer
 }
@@ -97,7 +96,7 @@ function drawLineOnScreen (screen, string, x, y, options) {
 function drawDotsOnScreen (screen, dots, x, y) {
   for (var m = 0; m < dots.length; m++) {
     for (var n = 0; n < dots[m].length; n++) {
-      screen[y + n][x + m] += dots[m][n]
+      screen[y + n][x + m] = dots[m][n]
     }
   }
   return screen
@@ -154,11 +153,7 @@ function getDotsFromCodePoints (array) {
 }
 
 function shiftUp (screen, context) {
-  var newRow = []
-  for (var i = 0; i < DSU_HORIZONTAL_RESOLUTION; i++) {
-    // newRow.push(Math.floor(Math.random() * randomness))
-    newRow.push(0)
-  }
+  var newRow = Array(DSU_HORIZONTAL_RESOLUTION)
   screen.shift()
   screen.push(newRow)
   drawScreen(screen, context)
