@@ -52,18 +52,27 @@ var randomness = 1.15
 // drawScreen(screen, context)
 
 // Words
-screen = drawLineOnScreen(screen, 'San Jose', 1, 3)
-screen = drawLineOnScreen(screen, '3, 7 min', 127, 3)
-screen = drawLineOnScreen(screen, '10 car train', 1, 13)
-screen = drawLineOnScreen(screen, 'lake tahoe', 1, 30)
-screen = drawLineOnScreen(screen, '5, 10 min', 119, 30)
-screen = drawLineOnScreen(screen, '9 car train', 1, 40)
+function makeScreen () {
+  screen = drawLineOnScreen(screen, 'San Jose', 1, 3)
+  screen = drawLineOnScreen(screen, '1, 5 min', 1, 3, { align: 'right' })
+  screen = drawLineOnScreen(screen, '12 car train', 1, 13)
+  screen = drawLineOnScreen(screen, 'lake tahoe', 1, 30)
+  screen = drawLineOnScreen(screen, '3, 9 min', 1, 30, { align: 'right' })
+  screen = drawLineOnScreen(screen, '15 car train', 1, 40)
 
-drawScreen(screen, context)
+  drawScreen(screen, context)
+}
 
-// window.setInterval(function () {
-//   shiftDown(screen, context)
-// }, 350);
+makeScreen()
+
+window.setInterval(function () {
+  shiftUp(screen, context)
+}, 350)
+
+window.setInterval(function () {
+  makeScreen()
+}, 20000)
+
 
 function makeEmptyScreenBuffer () {
   var buffer = []
@@ -76,8 +85,12 @@ function makeEmptyScreenBuffer () {
   return buffer
 }
 
-function drawLineOnScreen (screen, string, x, y) {
+function drawLineOnScreen (screen, string, x, y, options) {
   var dots = getDots(string)
+  options = options || {}
+  if (options.align === 'right') {
+    x = DSU_HORIZONTAL_RESOLUTION - x - dots.length
+  }
   return drawDotsOnScreen(screen, dots, x, y)
 }
 
@@ -118,6 +131,12 @@ function getDotsFromCodePoints (array) {
   for (var i = 0; i < array.length; i++) {
     var word = array[i]
     var length = 0
+
+    if (i > 0) {
+      line = line.concat(FONT[32], FONT.kerning)
+    }
+
+    // Add the next word
     for (var j = 0; j < word.length; j++) {
       var codePoint = word[j]
       var dotMatrix = FONT[codePoint]
@@ -125,9 +144,11 @@ function getDotsFromCodePoints (array) {
         dotMatrix = FONT.default
       }
       length += dotMatrix.length
-      line = line.concat(dotMatrix, FONT.kerning)
+      if (j > 0) {
+        line = line.concat(FONT.kerning)
+      }
+      line = line.concat(dotMatrix)
     }
-    line = line.concat(FONT[32])
   }
   return line
 }
@@ -135,7 +156,8 @@ function getDotsFromCodePoints (array) {
 function shiftUp (screen, context) {
   var newRow = []
   for (var i = 0; i < DSU_HORIZONTAL_RESOLUTION; i++) {
-    newRow.push(Math.floor(Math.random() * randomness))
+    // newRow.push(Math.floor(Math.random() * randomness))
+    newRow.push(0)
   }
   screen.shift()
   screen.push(newRow)
