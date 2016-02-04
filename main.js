@@ -39,9 +39,9 @@ var ledRadius = Math.max(Math.min(0.65 * ledWidth, 0.65 * ledHeight), 1) / 2
 // }
 
 // Scroll random dots!!
-var screen = makeEmptyScreenBuffer()
+// var screen = createEmptyScreenBuffer()
 
-var randomness = 1.15
+// var randomness = 1.15
 // for (var i = 0; i < DSU_HORIZONTAL_RESOLUTION * DSU_VERTICAL_RESOLUTION; i++) {
 //   var posX = i % DSU_HORIZONTAL_RESOLUTION
 //   var posY = Math.floor(i / DSU_HORIZONTAL_RESOLUTION)
@@ -52,45 +52,152 @@ var randomness = 1.15
 // drawScreen(screen, context)
 
 // Words
-function makeScreen () {
-  screen = drawLineOnScreen(screen, 'San Jose', 1, 3)
-  screen = drawLineOnScreen(screen, '1, 5 min', 1, 3, { align: 'right' })
-  screen = drawLineOnScreen(screen, '12 car train', 1, 13)
-  screen = drawLineOnScreen(screen, 'lake tahoe', 1, 30)
-  screen = drawLineOnScreen(screen, '3, 9 min', 1, 30, { align: 'right' })
-  screen = drawLineOnScreen(screen, '15 car train', 1, 40)
+var screenData = [
+  {
+    destination: 'San Jose',
+    trainLength: 12,
+    arrivesIn: [1, 5]
+  },
+  {
+    destination: 'Lake Tahoe',
+    trainLength: 15,
+    arrivesIn: [3, 9]
+  },
+  // {
+  //   destination: 'Whatever',
+  //   trainLength: 7,
+  //   arrivesIn: 8
+  // }
+]
 
-  drawScreen(screen, context)
-}
+var interval
 
-makeScreen()
+showArrivalTimes(screenData, context)
 
 window.setInterval(function () {
-  shiftUp(screen, context)
-}, 350)
-
-window.setInterval(function () {
-  makeScreen()
+  showArrivalTimes(screenData, context)
 }, 20000)
 
-// Creates an empty two-dimensional array of length
-// of the vertical dimension of the screen (this makes)
-// it easier to do vertical scrolling.
-function makeEmptyScreenBuffer () {
-  var buffer = Array(DSU_VERTICAL_RESOLUTION)
-  for (var i = 0; i < buffer.length; i++) {
-    buffer[i] = Array(DSU_HORIZONTAL_RESOLUTION)
+function showArrivalTimes (data, context) {
+  var screen = createArrivalTimesScreen(data)
+  var duration = screen.length + DSU_VERTICAL_RESOLUTION
+  var count = 0
+
+  window.clearInterval(interval)
+  drawScreen(screen, context)
+
+  interval = window.setInterval(function () {
+    shiftUp(screen, context)
+  }, 350)
+}
+
+/**
+ * Creates a screen buffer showing train arrival times.
+ * @params {Array} Array of data objects
+ * @returns {Array} Screen buffer
+ */
+function createArrivalTimesScreen (data) {
+  // Start with a blank screen buffer.
+  var screen = createEmptyScreenBuffer()
+
+  // These are the margins for this type of screen.
+  var xMargin = 1
+  var yTopMargin = 3
+
+  // These are the line heights and spacing for this
+  // type of screen.
+  var yLineHeight = 10
+  var yEntryMargin = 7
+
+  // Turn on the LEDs for this screen buffer.
+  // NOTE: This
+  data.forEach(function (datum, index) {
+    // Calculate the Y position for this set of data
+    var yPosition = yTopMargin + (((yLineHeight * 2) + yEntryMargin) * index)
+
+    // datum.arrivesIn could be a number, a string, or an array of numbers.
+    // Times should be in this format: 'A, B'
+    //  1         --> '1'
+    // '1'        --> '1'
+    // [1, 2]     --> '1, 2'
+    // ['1', '2'] --> '1, 2'
+    // '1, 2'     --> '1, 2'
+    // '1,2'      --> '1, 2'
+    var arrival = datum.arrivesIn.toString().replace(/,(?=\S)/, ', ')
+
+    // Write the dots to the screen buffer.
+    // Destination
+    screen = drawLineOnScreen(screen, datum.destination, xMargin, yPosition)
+    // Arrival times, same line as destination, aligned right
+    screen = drawLineOnScreen(screen, arrival + ' min', xMargin, yPosition, { align: 'right' })
+    // Length of car train, new line below destination
+    screen = drawLineOnScreen(screen, datum.trainLength.toString() + ' car train', xMargin, yPosition + yLineHeight)
+
+    // There is no protection against words that go on too long.
+    //
+  })
+
+  return screen
+}
+
+// -- ANOTHER SCREEN --
+
+// function makeAnotherScreen () {
+//   screen = drawLargeText(screen, 'San Francisco / Millbrae')
+//   drawScreen(screen, context)
+// }
+
+// makeAnotherScreen()
+
+/**
+ * Creates a two-dimensional array whose length is the vertical
+ * dimension of the screen, containing arrays whose length is the
+ * horizontal dimension of the screen. The array is filled with
+ * zeroes, indicating LEDs in the off state. Creating the screen
+ * buffer in the format of [y][x] makes it easier to do vertical
+ * scrolling with Array.push() and Array.pop() on the buffer.
+ * @returns {Array} Zero-filled two-dimensional screen buffer
+ */
+function createEmptyScreenBuffer () {
+  var buffer = Array(DSU_VERTICAL_RESOLUTION).fill([])
+  return buffer.map(function () {
+    return Array(DSU_HORIZONTAL_RESOLUTION).fill(0)
+  })
+}
+
+function drawLargeText (screen, string) {
+  // Automatically assume centering
+  var array = stringToArrayOfCodePoints(string)
+  var dots = getDotsFromCodePoints(array, BIG_FONT)
+  console.log(dots)
+  for (var i = 0; i < dots.length; i++) {
+    var width = dots[i].length
+    // Get X position to center the text
+    var posX = Math.floor((DSU_HORIZONTAL_RESOLUTION - width) / 2)
+    screen = drawDotsOnScreen(screen, dots[i], posX, 4 + (16 * i))
   }
-  return buffer
+  return screen
 }
 
 function drawLineOnScreen (screen, string, x, y, options) {
   var dots = getDots(string)
+
   options = options || {}
-  if (options.align === 'right') {
-    x = DSU_HORIZONTAL_RESOLUTION - x - dots.length
+
+  for (var i = 0; i < dots.length; i++) {
+    var line = dots[i]
+
+    if (options.align === 'right') {
+      x = DSU_HORIZONTAL_RESOLUTION - x - line.length
+    }
+    if (options.align === 'center') {
+      x = Math.floor((DSU_HORIZONTAL_RESOLUTION - line.length) / 2)
+    }
+
+    screen = drawDotsOnScreen(screen, line, x, y)
   }
-  return drawDotsOnScreen(screen, dots, x, y)
+
+  return screen
 }
 
 function drawDotsOnScreen (screen, dots, x, y) {
@@ -103,11 +210,11 @@ function drawDotsOnScreen (screen, dots, x, y) {
 }
 
 function getDots (string) {
-  var array = getStringCodePoints(string)
-  return getDotsFromCodePoints(array)
+  var array = stringToArrayOfCodePoints(string)
+  return getDotsFromCodePoints(array, FONT)
 }
 
-function getStringCodePoints (string) {
+function stringToArrayOfCodePoints (string) {
   var array = []
   string = string.trim().toUpperCase()
 
@@ -125,31 +232,60 @@ function getStringCodePoints (string) {
   return array
 }
 
-function getDotsFromCodePoints (array) {
+function getDotsFromCodePoints (codepoints, font) {
+  var lines = []
   var line = []
-  for (var i = 0; i < array.length; i++) {
-    var word = array[i]
-    var length = 0
+  var length = 0
+  var startOfLine = true
 
-    if (i > 0) {
-      line = line.concat(FONT[32], FONT.kerning)
+  for (var i = 0; i < codepoints.length; i++) {
+    var word = codepoints[i]
+    var unit = []
+    var test = []
+
+    // If the word is not at the beginning of a line,
+    // add a space before the word.
+    if (startOfLine !== true) {
+      unit = test.concat(font[32], font.kerning)
     }
 
     // Add the next word
     for (var j = 0; j < word.length; j++) {
-      var codePoint = word[j]
-      var dotMatrix = FONT[codePoint]
-      if (dotMatrix.length === 0) {
-        dotMatrix = FONT.default
+      var character = font[word[j]]
+
+      // Fall back if character is not found
+      if (character.length === 0) {
+        character = font.default
       }
-      length += dotMatrix.length
-      if (j > 0) {
-        line = line.concat(FONT.kerning)
+
+      // If the character is not the last in the word,
+      // add kerning after the character.
+      if (j !== word.length - 1) {
+        character = character.concat(font.kerning)
       }
-      line = line.concat(dotMatrix)
+
+      // Add to unit of dots
+      unit = unit.concat(character)
+    }
+
+    // If the current line + this word is not longer
+    // than the screen width, then add the word to the
+    // line. Otherwise, store the line and start a new
+    // one with the current word.
+    test = line.length + unit.length
+    if (test < DSU_HORIZONTAL_RESOLUTION) {
+      startOfLine = false
+      line = line.concat(unit)
+    } else {
+      lines.push(line)
+      startOfLine = true
+      line = unit
     }
   }
-  return line
+
+  // Push whatever is remaining of line
+  lines.push(line)
+  return lines
 }
 
 function shiftUp (screen, context) {
