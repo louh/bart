@@ -71,12 +71,16 @@ var screenData = [
 ]
 
 var interval
+var screenInterval
 
-showArrivalTimes(screenData, context)
-
-window.setInterval(function () {
+function setUpScreen () {
+  window.clearInterval(screenInterval)
   showArrivalTimes(screenData, context)
-}, 20000)
+  
+  screenInterval = window.setInterval(function () {
+    showArrivalTimes(screenData, context)
+  }, 20000)
+}
 
 function showArrivalTimes (data, context) {
   var screen = createArrivalTimesScreen(data)
@@ -380,14 +384,50 @@ function selectionSwitched (stationState, platformState) {
     return response.json()
   })
   .then(function (data) {
+    if (data.root.error) {
+      console.log('oops')
+    }
     if (data.root.message?.warning == 'No data matched your criteria.') {
       console.log('no data')
     }
-    console.log(data.root)
+
+    var newScreenData = []
+
+    if (data.root.station.length > 0) {
+      var etds = data.root.station[0].etd || []
+      for (let i = 0; i < etds.length; i++) {
+        var etd = etds[i]
+        var destination = etd.destination
+        var length
+        var minutes = []
+        var estimates = etd.estimate
+        for (let j = 0; j < 2; j++) {
+          var estimate = estimates[j]
+          if (!estimate) break
+          if (estimate.minutes === 'Leaving') {
+            continue
+          }
+          else {
+            minutes.push(estimate.minutes)
+            if (!length) {
+              length = estimate.length
+            }
+          }
+        }
+        newScreenData.push({
+          destination,
+          trainLength: length,
+          arrivesIn: minutes
+        })
+      }
+
+      screenData = newScreenData
+      setUpScreen ()
+    }
   })
 }
 
-selectionSwitched()
+selectionSwitched(stationState, platformState)
 
 const STATIONS = [
   { 
