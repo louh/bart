@@ -79,7 +79,7 @@ function setUpScreen () {
   
   screenInterval = window.setInterval(function () {
     showArrivalTimes(screenData, context)
-  }, 20000)
+  }, screenData.length * 10000)
 }
 
 function showArrivalTimes (data, context) {
@@ -90,9 +90,12 @@ function showArrivalTimes (data, context) {
   window.clearInterval(interval)
   drawScreen(screen, context)
 
-  interval = window.setInterval(function () {
-    shiftUp(screen, context)
-  }, 350)
+  // only scroll data if there is more than one thing
+  if (data.length > 1) {
+    interval = window.setInterval(function () {
+      shiftUp(screen, context)
+    }, 350)
+  }
 }
 
 /**
