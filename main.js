@@ -334,6 +334,9 @@ function getDevicePixelRatio (ctx) {
   return devicePixelRatio / backingStoreRatio
 }
 
+let platformState = 1
+let stationState = '19th'
+
 function switchPlatform (id) {
   var labelEl = document.getElementById('platform-id')
   labelEl.src = `platform${id}.svg`
@@ -345,9 +348,246 @@ function switchPlatform (id) {
 
   var buttonEl = document.getElementById(`platform${id}`)
   buttonEl.classList.add('active')
+
+  platformState = id
+
+  selectionSwitched(stationState, platformState)
 }
 
 document.getElementById('platform1').addEventListener('click', () => switchPlatform(1))
 document.getElementById('platform2').addEventListener('click', () => switchPlatform(2))
 document.getElementById('platform3').addEventListener('click', () => switchPlatform(3))
 document.getElementById('platform4').addEventListener('click', () => switchPlatform(4))
+
+document.getElementById('station').addEventListener('change', function (event) {
+  var station = event.target.value
+  stationState = station
+  selectionSwitched(stationState, platformState)
+})
+
+// BART API keys are free. This is currently using the "no strings attached key"
+// https://www.bart.gov/schedules/developers/api
+const BART_API_KEY = 'MW9S-E7SL-26DU-VV8V'
+
+function getApiUrl (station, platform) {
+  return `https://api.bart.gov/api/etd.aspx?cmd=etd&orig=${station}&plat=${platform}&key=${BART_API_KEY}&json=y`
+}
+
+// Experimental
+function selectionSwitched (stationState, platformState) {
+  window.fetch(getApiUrl(stationState, platformState))
+  .then(function (response) {
+    return response.json()
+  })
+  .then(function (data) {
+    if (data.root.message?.warning == 'No data matched your criteria.') {
+      console.log('no data')
+    }
+    console.log(data.root)
+  })
+}
+
+selectionSwitched()
+
+const STATIONS = [
+  { 
+    "id": "12th",
+    "label": "12th St. Oakland City Center"
+  },
+  { 
+    "id": "16th",
+    "label": "16th St. Mission (SF)"
+  },
+  { 
+    "id": "19th",
+    "label": "19th St. Oakland"
+  },
+  { 
+    "id": "24th",
+    "label": "24th St. Mission (SF)"
+  },
+  { 
+    "id": "ashb",
+    "label": "Ashby (Berkeley)"
+  },
+  { 
+    "id": "antc",
+    "label": "Antioch"
+  },
+  { 
+    "id": "balb",
+    "label": "Balboa Park (SF)"
+  },
+  { 
+    "id": "bayf",
+    "label": "Bay Fair (San Leandro)"
+  },
+  { 
+    "id": "bery",
+    "label": "Berryessa"
+  },
+  { 
+    "id": "cast",
+    "label": "Castro Valley"
+  },
+  { 
+    "id": "civc",
+    "label": "Civic Center (SF)"
+  },
+  { 
+    "id": "cols",
+    "label": "Coliseum"
+  },
+  { 
+    "id": "colm",
+    "label": "Colma"
+  },
+  { 
+    "id": "conc",
+    "label": "Concord"
+  },
+  { 
+    "id": "daly",
+    "label": "Daly City"
+  },
+  { 
+    "id": "dbrk",
+    "label": "Downtown Berkeley"
+  },
+  { 
+    "id": "dubl",
+    "label": "Dublin/Pleasanton"
+  },
+  { 
+    "id": "deln",
+    "label": "El Cerrito del Norte"
+  },
+  { 
+    "id": "plza",
+    "label": "El Cerrito Plaza"
+  },
+  { 
+    "id": "embr",
+    "label": "Embarcadero (SF)"
+  },
+  { 
+    "id": "frmt",
+    "label": "Fremont"
+  },
+  { 
+    "id": "ftvl",
+    "label": "Fruitvale (Oakland)"
+  },
+  { 
+    "id": "glen",
+    "label": "Glen Park (SF)"
+  },
+  { 
+    "id": "hayw",
+    "label": "Hayward"
+  },
+  { 
+    "id": "lafy",
+    "label": "Lafayette"
+  },
+  { 
+    "id": "lake",
+    "label": "Lake Merritt (Oakland)"
+  },
+  { 
+    "id": "mcar",
+    "label": "MacArthur (Oakland)"
+  },
+  { 
+    "id": "mlbr",
+    "label": "Millbrae"
+  },
+  { 
+    "id": "mlpt",
+    "label": "Milpitas"
+  },
+  { 
+    "id": "mont",
+    "label": "Montgomery St. (SF)"
+  },
+  { 
+    "id": "nbrk",
+    "label": "North Berkeley"
+  },
+  { 
+    "id": "ncon",
+    "label": "North Concord/Martinez"
+  },
+  { 
+    "id": "oakl",
+    "label": "Oakland Int'l Airport"
+  },
+  { 
+    "id": "orin",
+    "label": "Orinda"
+  },
+  { 
+    "id": "pitt",
+    "label": "Pittsburg/Bay Point"
+  },
+  { 
+    "id": "pctr",
+    "label": "Pittsburg Center"
+  },
+  { 
+    "id": "phil",
+    "label": "Pleasant Hill"
+  },
+  { 
+    "id": "powl",
+    "label": "Powell St. (SF)"
+  },
+  { 
+    "id": "rich",
+    "label": "Richmond"
+  },
+  { 
+    "id": "rock",
+    "label": "Rockridge (Oakland)"
+  },
+  { 
+    "id": "sbrn",
+    "label": "San Bruno"
+  },
+  { 
+    "id": "sfia",
+    "label": "San Francisco Int'l Airport"
+  },
+  { 
+    "id": "sanl",
+    "label": "San Leandro"
+  },
+  { 
+    "id": "shay",
+    "label": "South Hayward"
+  },
+  { 
+    "id": "ssan",
+    "label": "South San Francisco"
+  },
+  { 
+    "id": "ucty",
+    "label": "Union City"
+  },
+  { 
+    "id": "warm",
+    "label": "Warm Springs/South Fremont"
+  },
+  { 
+    "id": "wcrk",
+    "label": "Walnut Creek"
+  },
+  { 
+    "id": "wdub",
+    "label": "West Dublin"
+  },
+  { 
+    "id": "woak",
+    "label": "West Oakland"
+  },
+]
