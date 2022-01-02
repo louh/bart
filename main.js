@@ -333,3 +333,21 @@ function getDevicePixelRatio (ctx) {
                           ctx.backingStorePixelRatio || 1
   return devicePixelRatio / backingStoreRatio
 }
+
+function switchPlatform (id) {
+  var labelEl = document.getElementById('platform-id')
+  labelEl.src = `platform${id}.svg`
+
+  var buttons = document.querySelectorAll('.controls-platform button')
+  for (var i = 0; i < buttons.length; i++) {
+    buttons[i].classList.remove('active')
+  }
+
+  var buttonEl = document.getElementById(`platform${id}`)
+  buttonEl.classList.add('active')
+}
+
+document.getElementById('platform1').addEventListener('click', () => switchPlatform(1))
+document.getElementById('platform2').addEventListener('click', () => switchPlatform(2))
+document.getElementById('platform3').addEventListener('click', () => switchPlatform(3))
+document.getElementById('platform4').addEventListener('click', () => switchPlatform(4))
