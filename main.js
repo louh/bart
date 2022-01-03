@@ -51,6 +51,10 @@ var ledRadius = Math.max(Math.min(0.65 * ledWidth, 0.65 * ledHeight), 1) / 2
 
 // drawScreen(screen, context)
 
+// State
+let platformState = 1
+let stationState = '19th'
+
 // Words
 var screenData
 var fantasyData = [
@@ -64,23 +68,30 @@ var fantasyData = [
     trainLength: 15,
     arrivesIn: [3, 18]
   },
-  // {
-  //   destination: 'Healdsburg',
-  //   trainLength: 7,
-  //   arrivesIn: 16
-  // }
+  {
+    destination: 'Healdsburg',
+    trainLength: 7,
+    arrivesIn: 16
+  }
 ]
 
 var interval
 var screenInterval
+var screenRefreshTimeout
 
 function setUpScreen () {
   window.clearInterval(screenInterval)
   showArrivalTimes(screenData, context)
   
-  screenInterval = window.setInterval(function () {
-    showArrivalTimes(screenData, context)
-  }, screenData.length * 9000)
+  // screenInterval = window.setInterval(function () {
+  //   showArrivalTimes(screenData, context)
+  // }, screenData.length * 10000)
+
+  if (screenData.length > 0) {
+    screenRefreshTimeout = window.setTimeout(function () {
+      selectionSwitched(stationState, platformState)
+    }, screenData.length * 9500)
+  }
 }
 
 function showArrivalTimes (data, context) {
@@ -106,7 +117,7 @@ function showArrivalTimes (data, context) {
  */
 function createArrivalTimesScreen (data) {
   // Start with a blank screen buffer.
-  var screen = createEmptyScreenBuffer()
+  var screen = createEmptyScreenBuffer(data.length * 30)
 
   // These are the margins for this type of screen.
   var xMargin = 1
@@ -172,8 +183,9 @@ function createArrivalTimesScreen (data) {
  * scrolling with Array.push() and Array.pop() on the buffer.
  * @returns {Array} Zero-filled two-dimensional screen buffer
  */
-function createEmptyScreenBuffer () {
-  var buffer = Array(DSU_VERTICAL_RESOLUTION).fill([])
+function createEmptyScreenBuffer (vert = DSU_VERTICAL_RESOLUTION) {
+  vert = Math.max(vert, DSU_VERTICAL_RESOLUTION)
+  var buffer = Array(vert).fill([])
   return buffer.map(function () {
     return Array(DSU_HORIZONTAL_RESOLUTION).fill(0)
   })
@@ -348,9 +360,6 @@ function getDevicePixelRatio (ctx) {
   return devicePixelRatio / backingStoreRatio
 }
 
-let platformState = 1
-let stationState = '19th'
-
 function switchPlatform (id) {
   var labelEl = document.getElementById('platform-id')
   labelEl.src = `platform${id}.svg`
@@ -389,6 +398,8 @@ function getApiUrl (station, platform) {
 
 // Experimental
 function selectionSwitched (stationState, platformState) {
+  window.clearTimeout(screenRefreshTimeout)
+
   if (stationState === '----') {
     screenData = fantasyData
     setUpScreen ()
@@ -447,10 +458,10 @@ function selectionSwitched (stationState, platformState) {
           arrivesIn: minutes
         })
       }
-
-      screenData = newScreenData
-      setUpScreen ()
     }
+
+    screenData = newScreenData
+    setUpScreen ()
   })
 }
 
