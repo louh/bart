@@ -79,7 +79,7 @@ function setUpScreen () {
   
   screenInterval = window.setInterval(function () {
     showArrivalTimes(screenData, context)
-  }, screenData.length * 10000)
+  }, screenData.length * 9000)
 }
 
 function showArrivalTimes (data, context) {
@@ -130,7 +130,13 @@ function createArrivalTimesScreen (data) {
     // ['1', '2'] --> '1, 2'
     // '1, 2'     --> '1, 2'
     // '1,2'      --> '1, 2'
-    var arrival = datum.arrivesIn.toString().replace(/,(?=\S)/, ', ')
+    // Note: remove the space after the comma for now.
+    // the space appears if the second number is 1-digit, e.g
+    // '1, 3 MIN'
+    // but not if the second number is 2 digits, e.g.
+    // '5,15 MIN'
+    // this aligns the comma on the display
+    var arrival = datum.arrivesIn.toString()//.replace(/,(?=\S)/, ', ')
 
     // Write the dots to the screen buffer.
     // Destination
@@ -417,6 +423,15 @@ function selectionSwitched (stationState, platformState) {
             }
           }
         }
+        // some names are too long so we shorten
+        if (destination === 'Dublin/Pleasanton') {
+          destination = 'Dubln Plstn'
+        }
+        // not used anymore?
+        if (destination === 'Pittsburg/Bay Point') {
+          destination = 'Pts/Bay Pt'
+        }
+
         newScreenData.push({
           destination,
           trainLength: length,
@@ -435,7 +450,8 @@ selectionSwitched(stationState, platformState)
 const STATIONS = [
   { 
     "id": "12th",
-    "label": "12th St. Oakland City Center"
+    "label": "12th St. Oakland City Center",
+    "platforms": "1234" // todo: gray out stations w/o the right platforms
   },
   { 
     "id": "16th",
