@@ -104,9 +104,11 @@ function showArrivalTimes (data, context) {
 
   // only scroll data if there is more than one thing
   if (data.length > 1) {
-    interval = window.setInterval(function () {
-      shiftUp(screen, context)
-    }, 350)
+    window.setTimeout(function () {
+      interval = window.setInterval(function () {
+        shiftUp(screen, context)
+      }, 350)
+    }, 500) // slight delay before scroll
   }
 }
 
