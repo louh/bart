@@ -52,7 +52,8 @@ var ledRadius = Math.max(Math.min(0.65 * ledWidth, 0.65 * ledHeight), 1) / 2
 // drawScreen(screen, context)
 
 // Words
-var screenData = [
+var screenData
+var fantasyData = [
   {
     destination: 'San Jose',
     trainLength: 12,
@@ -61,12 +62,12 @@ var screenData = [
   {
     destination: 'Lake Tahoe',
     trainLength: 15,
-    arrivesIn: [3, 9]
+    arrivesIn: [3, 18]
   },
   // {
-  //   destination: 'Whatever',
+  //   destination: 'Healdsburg',
   //   trainLength: 7,
-  //   arrivesIn: 8
+  //   arrivesIn: 16
   // }
 ]
 
@@ -388,6 +389,12 @@ function getApiUrl (station, platform) {
 
 // Experimental
 function selectionSwitched (stationState, platformState) {
+  if (stationState === '----') {
+    screenData = fantasyData
+    setUpScreen ()
+    return
+  }
+
   window.fetch(getApiUrl(stationState, platformState))
   .then(function (response) {
     return response.json()
