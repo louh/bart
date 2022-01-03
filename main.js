@@ -393,11 +393,13 @@ function selectionSwitched (stationState, platformState) {
     return response.json()
   })
   .then(function (data) {
+    document.getElementById('error').style.opacity = '0'
     if (data.root.error) {
       console.log('oops')
     }
     if (data.root.message?.warning == 'No data matched your criteria.') {
       console.log('no data')
+      document.getElementById('error').style.opacity = '1'
     }
 
     var newScreenData = []

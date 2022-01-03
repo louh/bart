@@ -23,6 +23,7 @@ body {
   justify-content: center;
   padding: 5vw;
   box-sizing: border-box;
+  flex-direction: column;
 }
 
 .dsu-container {
@@ -99,4 +100,10 @@ h3 {
 
 .controls-platform button.active {
   background-color: rgba(255, 255, 255, 0.3);
+}
+
+#error {
+  color: whitesmoke;
+  opacity: 0;
+  margin-top: 2em;
 }
