@@ -156,7 +156,7 @@ function createArrivalTimesScreen (data) {
     // Destination
     screen = drawLineOnScreen(screen, datum.destination, xMargin, yPosition)
     // Arrival times, same line as destination, aligned right
-    screen = drawLineOnScreen(screen, arrival + ' min', xMargin, yPosition, { align: 'right' })
+    screen = drawLineOnScreen(screen, arrival + ' min', xMargin, yPosition, {align: 'right' })
     // Length of car train, new line below destination
     screen = drawLineOnScreen(screen, datum.trainLength.toString() + ' car train', xMargin, yPosition + yLineHeight)
 
@@ -470,204 +470,205 @@ function selectionSwitched (stationState, platformState) {
 selectionSwitched(stationState, platformState)
 
 const STATIONS = [
-  { 
+  {
     "id": "12th",
     "label": "12th St. Oakland City Center",
     "platforms": "1234" // todo: gray out stations w/o the right platforms
   },
-  { 
+  {
     "id": "16th",
     "label": "16th St. Mission (SF)"
   },
-  { 
+  {
     "id": "19th",
     "label": "19th St. Oakland"
   },
-  { 
+  {
     "id": "24th",
     "label": "24th St. Mission (SF)"
   },
-  { 
+  {
     "id": "ashb",
     "label": "Ashby (Berkeley)"
   },
-  { 
+  {
     "id": "antc",
     "label": "Antioch"
   },
-  { 
+  {
     "id": "balb",
     "label": "Balboa Park (SF)"
   },
-  { 
+  {
     "id": "bayf",
     "label": "Bay Fair (San Leandro)"
   },
-  { 
+  {
     "id": "bery",
     "label": "Berryessa"
   },
-  { 
+  {
     "id": "cast",
     "label": "Castro Valley"
   },
-  { 
+  {
     "id": "civc",
     "label": "Civic Center (SF)"
   },
-  { 
+  {
     "id": "cols",
     "label": "Coliseum"
   },
-  { 
+  {
     "id": "colm",
     "label": "Colma"
   },
-  { 
+  {
     "id": "conc",
     "label": "Concord"
   },
-  { 
+  {
     "id": "daly",
     "label": "Daly City"
   },
-  { 
+  {
     "id": "dbrk",
     "label": "Downtown Berkeley"
   },
-  { 
+  {
     "id": "dubl",
     "label": "Dublin/Pleasanton"
   },
-  { 
+  {
     "id": "deln",
     "label": "El Cerrito del Norte"
   },
-  { 
+  {
     "id": "plza",
     "label": "El Cerrito Plaza"
   },
-  { 
+  {
     "id": "embr",
     "label": "Embarcadero (SF)"
   },
-  { 
+  {
     "id": "frmt",
     "label": "Fremont"
   },
-  { 
+  {
     "id": "ftvl",
     "label": "Fruitvale (Oakland)"
   },
-  { 
+  {
     "id": "glen",
     "label": "Glen Park (SF)"
   },
-  { 
+  {
     "id": "hayw",
     "label": "Hayward"
   },
-  { 
+  {
     "id": "lafy",
     "label": "Lafayette"
   },
-  { 
+  {
     "id": "lake",
     "label": "Lake Merritt (Oakland)"
   },
-  { 
+  {
     "id": "mcar",
     "label": "MacArthur (Oakland)"
   },
-  { 
+  {
     "id": "mlbr",
     "label": "Millbrae"
   },
-  { 
+  {
     "id": "mlpt",
     "label": "Milpitas"
   },
-  { 
+  {
     "id": "mont",
     "label": "Montgomery St. (SF)"
   },
-  { 
+  {
     "id": "nbrk",
     "label": "North Berkeley"
   },
-  { 
+  {
     "id": "ncon",
     "label": "North Concord/Martinez"
   },
-  { 
-    "id": "oakl",
-    "label": "Oakland Int'l Airport"
-  },
-  { 
+  // This doesn't have real time info
+  // {
+  //   "id": "oakl",
+  //   "label": "Oakland Int'l Airport"
+  // },
+  {
     "id": "orin",
     "label": "Orinda"
   },
-  { 
+  {
     "id": "pitt",
     "label": "Pittsburg/Bay Point"
   },
-  { 
+  {
     "id": "pctr",
     "label": "Pittsburg Center"
   },
-  { 
+  {
     "id": "phil",
     "label": "Pleasant Hill"
   },
-  { 
+  {
     "id": "powl",
     "label": "Powell St. (SF)"
   },
-  { 
+  {
     "id": "rich",
     "label": "Richmond"
   },
-  { 
+  {
     "id": "rock",
     "label": "Rockridge (Oakland)"
   },
-  { 
+  {
     "id": "sbrn",
     "label": "San Bruno"
   },
-  { 
+  {
     "id": "sfia",
     "label": "San Francisco Int'l Airport"
   },
-  { 
+  {
     "id": "sanl",
     "label": "San Leandro"
   },
-  { 
+  {
     "id": "shay",
     "label": "South Hayward"
   },
-  { 
+  {
     "id": "ssan",
     "label": "South San Francisco"
   },
-  { 
+  {
     "id": "ucty",
     "label": "Union City"
   },
-  { 
+  {
     "id": "warm",
     "label": "Warm Springs/South Fremont"
   },
-  { 
+  {
     "id": "wcrk",
     "label": "Walnut Creek"
   },
-  { 
+  {
     "id": "wdub",
     "label": "West Dublin"
   },
-  { 
+  {
     "id": "woak",
     "label": "West Oakland"
   },
