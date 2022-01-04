@@ -5,6 +5,254 @@ var DSU_VERTICAL_RESOLUTION = 50
 var DSU_LED_ON_COLOR = 'hsla(0, 100%, 50%, 1)'
 var DSU_LED_OFF_COLOR = 'hsla(0, 100%, 10%, 1)'
 
+const STATIONS = {
+  "12th": {
+    "id": "12th",
+    "label": "12th St. Oakland City Center",
+    "platforms": "3"
+  },
+  "16th": {
+    "id": "16th",
+    "label": "16th St. Mission (SF)",
+    "platforms": "2"
+  },
+  "19th": {
+    "id": "19th",
+    "label": "19th St. Oakland",
+    "platforms": "3"
+  },
+  "24th": {
+    "id": "24th",
+    "label": "24th St. Mission (SF)",
+    "platforms": "2"
+  },
+  "ashb": {
+    "id": "ashb",
+    "label": "Ashby (Berkeley)",
+    "platforms": "2"
+  },
+  "antc": {
+    "id": "antc",
+    "label": "Antioch",
+    "platforms": "2"
+  },
+  "balb": {
+    "id": "balb",
+    "label": "Balboa Park (SF)",
+    "platforms": "2"
+  },
+  "bayf": {
+    "id": "bayf",
+    "label": "Bay Fair (San Leandro)",
+    "platforms": "2"
+  },
+  "bery": {
+    "id": "bery",
+    "label": "Berryessa",
+    "platforms": "3"
+  },
+  "cast": {
+    "id": "cast",
+    "label": "Castro Valley",
+    "platforms": "2"
+  },
+  "civc": {
+    "id": "civc",
+    "label": "Civic Center (SF)",
+    "platforms": "2"
+  },
+  "cols": {
+    "id": "cols",
+    "label": "Coliseum",
+    "platforms": "3"
+  },
+  "colm": {
+    "id": "colm",
+    "label": "Colma",
+    "platforms": "2"
+  },
+  "conc": {
+    "id": "conc",
+    "label": "Concord",
+    "platforms": "2"
+  },
+  "daly": {
+    "id": "daly",
+    "label": "Daly City",
+    "platforms": "3"
+  },
+  "dbrk": {
+    "id": "dbrk",
+    "label": "Downtown Berkeley",
+    "platforms": "2"
+  },
+  "dubl": {
+    "id": "dubl",
+    "label": "Dublin/Pleasanton",
+    "platforms": "2"
+  },
+  "deln": {
+    "id": "deln",
+    "label": "El Cerrito del Norte",
+    "platforms": "2"
+  },
+  "plza": {
+    "id": "plza",
+    "label": "El Cerrito Plaza",
+    "platforms": "2"
+  },
+  "embr": {
+    "id": "embr",
+    "label": "Embarcadero (SF)",
+    "platforms": "2"
+  },
+  "frmt": {
+    "id": "frmt",
+    "label": "Fremont",
+    "platforms": "2"
+  },
+  "ftvl": {
+    "id": "ftvl",
+    "label": "Fruitvale (Oakland)",
+    "platforms": "2"
+  },
+  "glen": {
+    "id": "glen",
+    "label": "Glen Park (SF)",
+    "platforms": "2"
+  },
+  "hayw": {
+    "id": "hayw",
+    "label": "Hayward",
+    "platforms": "2"
+  },
+  "lafy": {
+    "id": "lafy",
+    "label": "Lafayette",
+    "platforms": "2"
+  },
+  "lake": {
+    "id": "lake",
+    "label": "Lake Merritt (Oakland)",
+    "platforms": "2"
+  },
+  "mcar": {
+    "id": "mcar",
+    "label": "MacArthur (Oakland)",
+    "platforms": "4"
+  },
+  "mlbr": {
+    "id": "mlbr",
+    "label": "Millbrae",
+    "platforms": "4"
+  },
+  "mlpt": {
+    "id": "mlpt",
+    "label": "Milpitas",
+    "platforms": "2"
+  },
+  "mont": {
+    "id": "mont",
+    "label": "Montgomery St. (SF)",
+    "platforms": "2"
+  },
+  "nbrk": {
+    "id": "nbrk",
+    "label": "North Berkeley",
+    "platforms": "2"
+  },
+  "ncon": {
+    "id": "ncon",
+    "label": "North Concord/Martinez",
+    "platforms": "2"
+  },
+  "orin": {
+    "id": "orin",
+    "label": "Orinda",
+    "platforms": "2"
+  },
+  "pitt": {
+    "id": "pitt",
+    "label": "Pittsburg/Bay Point",
+    "platforms": "2"
+  },
+  "pctr": {
+    "id": "pctr",
+    "label": "Pittsburg Center",
+    "platforms": "2"
+  },
+  "phil": {
+    "id": "phil",
+    "label": "Pleasant Hill",
+    "platforms": "2"
+  },
+  "powl": {
+    "id": "powl",
+    "label": "Powell St. (SF)",
+    "platforms": "2"
+  },
+  "rich": {
+    "id": "rich",
+    "label": "Richmond",
+    "platforms": "2"
+  },
+  "rock": {
+    "id": "rock",
+    "label": "Rockridge (Oakland)",
+    "platforms": "2"
+  },
+  "sbrn": {
+    "id": "sbrn",
+    "label": "San Bruno",
+    "platforms": "2"
+  },
+  "sfia": {
+    "id": "sfia",
+    "label": "San Francisco Int'l Airport",
+    "platforms": "3"
+  },
+  "sanl": {
+    "id": "sanl",
+    "label": "San Leandro",
+    "platforms": "2"
+  },
+  "shay": {
+    "id": "shay",
+    "label": "South Hayward",
+    "platforms": "2"
+  },
+  "ssan": {
+    "id": "ssan",
+    "label": "South San Francisco",
+    "platforms": "2"
+  },
+  "ucty": {
+    "id": "ucty",
+    "label": "Union City",
+    "platforms": "2"
+  },
+  "warm": {
+    "id": "warm",
+    "label": "Warm Springs/South Fremont",
+    "platforms": "2"
+  },
+  "wcrk": {
+    "id": "wcrk",
+    "label": "Walnut Creek",
+    "platforms": "2"
+  },
+  "wdub": {
+    "id": "wdub",
+    "label": "West Dublin",
+    "platforms": "2"
+  },
+  "woak": {
+    "id": "woak",
+    "label": "West Oakland",
+    "platforms": "2"
+  }
+}
+
 var canvas = document.getElementById('led')
 var context = canvas.getContext('2d')
 
@@ -401,11 +649,24 @@ function getApiUrl (station, platform) {
 // Experimental
 function selectionSwitched (stationState, platformState) {
   window.clearTimeout(screenRefreshTimeout)
+  var buttons = document.querySelectorAll('.controls-platform button')
+  for (var i = 0; i < buttons.length; i++) {
+    buttons[i].removeAttribute('disabled')
+  }
 
   if (stationState === '----') {
     screenData = fantasyData
     setUpScreen ()
     return
+  }
+
+  // disable stations that are not present
+  var stationData = STATIONS[stationState]
+  var numPlatforms = Number.parseInt(stationData.platforms, 10)
+  for (var i = 0; i < buttons.length; i++) {
+    if (Number.parseInt(buttons[i].id.slice(-1)) > numPlatforms) {
+      buttons[i].setAttribute('disabled', true)
+    }
   }
 
   window.fetch(getApiUrl(stationState, platformState))
@@ -468,208 +729,3 @@ function selectionSwitched (stationState, platformState) {
 }
 
 selectionSwitched(stationState, platformState)
-
-const STATIONS = [
-  {
-    "id": "12th",
-    "label": "12th St. Oakland City Center",
-    "platforms": "1234" // todo: gray out stations w/o the right platforms
-  },
-  {
-    "id": "16th",
-    "label": "16th St. Mission (SF)"
-  },
-  {
-    "id": "19th",
-    "label": "19th St. Oakland"
-  },
-  {
-    "id": "24th",
-    "label": "24th St. Mission (SF)"
-  },
-  {
-    "id": "ashb",
-    "label": "Ashby (Berkeley)"
-  },
-  {
-    "id": "antc",
-    "label": "Antioch"
-  },
-  {
-    "id": "balb",
-    "label": "Balboa Park (SF)"
-  },
-  {
-    "id": "bayf",
-    "label": "Bay Fair (San Leandro)"
-  },
-  {
-    "id": "bery",
-    "label": "Berryessa"
-  },
-  {
-    "id": "cast",
-    "label": "Castro Valley"
-  },
-  {
-    "id": "civc",
-    "label": "Civic Center (SF)"
-  },
-  {
-    "id": "cols",
-    "label": "Coliseum"
-  },
-  {
-    "id": "colm",
-    "label": "Colma"
-  },
-  {
-    "id": "conc",
-    "label": "Concord"
-  },
-  {
-    "id": "daly",
-    "label": "Daly City"
-  },
-  {
-    "id": "dbrk",
-    "label": "Downtown Berkeley"
-  },
-  {
-    "id": "dubl",
-    "label": "Dublin/Pleasanton"
-  },
-  {
-    "id": "deln",
-    "label": "El Cerrito del Norte"
-  },
-  {
-    "id": "plza",
-    "label": "El Cerrito Plaza"
-  },
-  {
-    "id": "embr",
-    "label": "Embarcadero (SF)"
-  },
-  {
-    "id": "frmt",
-    "label": "Fremont"
-  },
-  {
-    "id": "ftvl",
-    "label": "Fruitvale (Oakland)"
-  },
-  {
-    "id": "glen",
-    "label": "Glen Park (SF)"
-  },
-  {
-    "id": "hayw",
-    "label": "Hayward"
-  },
-  {
-    "id": "lafy",
-    "label": "Lafayette"
-  },
-  {
-    "id": "lake",
-    "label": "Lake Merritt (Oakland)"
-  },
-  {
-    "id": "mcar",
-    "label": "MacArthur (Oakland)"
-  },
-  {
-    "id": "mlbr",
-    "label": "Millbrae"
-  },
-  {
-    "id": "mlpt",
-    "label": "Milpitas"
-  },
-  {
-    "id": "mont",
-    "label": "Montgomery St. (SF)"
-  },
-  {
-    "id": "nbrk",
-    "label": "North Berkeley"
-  },
-  {
-    "id": "ncon",
-    "label": "North Concord/Martinez"
-  },
-  // This doesn't have real time info
-  // {
-  //   "id": "oakl",
-  //   "label": "Oakland Int'l Airport"
-  // },
-  {
-    "id": "orin",
-    "label": "Orinda"
-  },
-  {
-    "id": "pitt",
-    "label": "Pittsburg/Bay Point"
-  },
-  {
-    "id": "pctr",
-    "label": "Pittsburg Center"
-  },
-  {
-    "id": "phil",
-    "label": "Pleasant Hill"
-  },
-  {
-    "id": "powl",
-    "label": "Powell St. (SF)"
-  },
-  {
-    "id": "rich",
-    "label": "Richmond"
-  },
-  {
-    "id": "rock",
-    "label": "Rockridge (Oakland)"
-  },
-  {
-    "id": "sbrn",
-    "label": "San Bruno"
-  },
-  {
-    "id": "sfia",
-    "label": "San Francisco Int'l Airport"
-  },
-  {
-    "id": "sanl",
-    "label": "San Leandro"
-  },
-  {
-    "id": "shay",
-    "label": "South Hayward"
-  },
-  {
-    "id": "ssan",
-    "label": "South San Francisco"
-  },
-  {
-    "id": "ucty",
-    "label": "Union City"
-  },
-  {
-    "id": "warm",
-    "label": "Warm Springs/South Fremont"
-  },
-  {
-    "id": "wcrk",
-    "label": "Walnut Creek"
-  },
-  {
-    "id": "wdub",
-    "label": "West Dublin"
-  },
-  {
-    "id": "woak",
-    "label": "West Oakland"
-  },
-]
