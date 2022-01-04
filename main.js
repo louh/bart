@@ -300,8 +300,9 @@ var ledRadius = Math.max(Math.min(0.65 * ledWidth, 0.65 * ledHeight), 1) / 2
 // drawScreen(screen, context)
 
 // State
-let platformState = 1
-let stationState = '19th'
+// Read from DOM because browsing reloading will remember select choice
+let platformState = getSelectedPlatform() || 1
+let stationState = document.getElementById('station').value || '19th'
 
 // Words
 var screenData
@@ -343,10 +344,10 @@ function setUpScreen () {
   }
 }
 
-function setUpCurrentScreen (destination, length) {
+function setUpCurrentScreen (data) {
   window.clearInterval(interval)
   window.clearInterval(screenInterval)
-  showCurrentTrain(destination, length)
+  showCurrentTrain(data)
 
   screenRefreshTimeout = window.setTimeout(function () {
     selectionSwitched(stationState, platformState)
@@ -428,10 +429,15 @@ function createArrivalTimesScreen (data) {
 
 // -- CURRENTLY BOARDING TRAIN SCREEN --
 
-function showCurrentTrain (destination, length) {
+function showCurrentTrain ({ destination, length, bikes }) {
   var screen = createEmptyScreenBuffer(DSU_VERTICAL_RESOLUTION)
   screen = drawLargeText(screen, destination)
-  screen = drawLineOnScreen(screen, `${length} CAR TRAIN`, null, 39, { align: 'center' })
+  
+  var text = `${length} CAR TRAIN`
+  if (bikes === false) {
+    text += ' - NO BIKES'
+  }
+  screen = drawLineOnScreen(screen, text, null, 39, { align: 'center' })
 
   drawScreen(screen, context)
 }
@@ -639,6 +645,18 @@ function switchPlatform (id) {
   selectionSwitched(stationState, platformState)
 }
 
+function getSelectedPlatform () {
+  var selectedPlatform = null
+  var buttons = document.querySelectorAll('.controls-platform button')
+  for (var i = 0; i < buttons.length; i++) {
+    if (buttons[i].classList.contains('active')) {
+      selectedPlatform = Number.parseInt(buttons[i].dataset.platformId, 10)
+      break
+    }
+  }
+  return selectedPlatform
+}
+
 document.getElementById('platform1').addEventListener('click', () => switchPlatform(1))
 document.getElementById('platform2').addEventListener('click', () => switchPlatform(2))
 document.getElementById('platform3').addEventListener('click', () => switchPlatform(3))
@@ -676,7 +694,7 @@ function selectionSwitched (stationState, platformState) {
   var stationData = STATIONS[stationState]
   var numPlatforms = Number.parseInt(stationData.platforms, 10)
   for (var i = 0; i < buttons.length; i++) {
-    if (Number.parseInt(buttons[i].id.slice(-1)) > numPlatforms) {
+    if (Number.parseInt(buttons[i].dataset.platformId) > numPlatforms) {
       buttons[i].setAttribute('disabled', true)
     }
   }
@@ -712,7 +730,8 @@ function selectionSwitched (stationState, platformState) {
           if (estimate.minutes === 'Leaving') {
             isCurrentTrain = {
               destination: etd.destination,
-              length: estimate.length
+              length: estimate.length,
+              bikes: estimate.bikeflag === "1" ? true : false
             }
             break
           }
@@ -743,7 +762,7 @@ function selectionSwitched (stationState, platformState) {
     }
 
     if (isCurrentTrain) {
-      setUpCurrentScreen(isCurrentTrain.destination, isCurrentTrain.length)
+      setUpCurrentScreen(isCurrentTrain)
     } else {
       screenData = newScreenData
       setUpScreen()
