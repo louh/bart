@@ -328,6 +328,7 @@ var screenInterval
 var screenRefreshTimeout
 
 function setUpScreen () {
+  window.clearInterval(interval)
   window.clearInterval(screenInterval)
   showArrivalTimes(screenData, context)
   
@@ -340,6 +341,16 @@ function setUpScreen () {
       selectionSwitched(stationState, platformState)
     }, screenData.length * 9500)
   }
+}
+
+function setUpCurrentScreen (destination, length) {
+  window.clearInterval(interval)
+  window.clearInterval(screenInterval)
+  showCurrentTrain(destination, length)
+
+  screenRefreshTimeout = window.setTimeout(function () {
+    selectionSwitched(stationState, platformState)
+  }, 20000)
 }
 
 function showArrivalTimes (data, context) {
@@ -415,14 +426,15 @@ function createArrivalTimesScreen (data) {
   return screen
 }
 
-// -- ANOTHER SCREEN --
+// -- CURRENTLY BOARDING TRAIN SCREEN --
 
-// function makeAnotherScreen () {
-//   screen = drawLargeText(screen, 'San Francisco / Millbrae')
-//   drawScreen(screen, context)
-// }
+function showCurrentTrain (destination, length) {
+  var screen = createEmptyScreenBuffer(DSU_VERTICAL_RESOLUTION)
+  screen = drawLargeText(screen, destination)
+  screen = drawLineOnScreen(screen, `${length} CAR TRAIN`, null, 39, { align: 'center' })
 
-// makeAnotherScreen()
+  drawScreen(screen, context)
+}
 
 /**
  * Creates a two-dimensional array whose length is the vertical
@@ -445,7 +457,7 @@ function drawLargeText (screen, string) {
   // Automatically assume centering
   var array = stringToArrayOfCodePoints(string)
   var dots = getDotsFromCodePoints(array, BIG_FONT)
-  console.log(dots)
+
   for (var i = 0; i < dots.length; i++) {
     var width = dots[i].length
     // Get X position to center the text
@@ -656,7 +668,7 @@ function selectionSwitched (stationState, platformState) {
 
   if (stationState === '----') {
     screenData = fantasyData
-    setUpScreen ()
+    setUpScreen()
     return
   }
 
@@ -684,6 +696,7 @@ function selectionSwitched (stationState, platformState) {
     }
 
     var newScreenData = []
+    var isCurrentTrain = null
 
     if (data.root.station.length > 0) {
       var etds = data.root.station[0].etd || []
@@ -697,7 +710,11 @@ function selectionSwitched (stationState, platformState) {
           var estimate = estimates[j]
           if (!estimate) break
           if (estimate.minutes === 'Leaving') {
-            continue
+            isCurrentTrain = {
+              destination: etd.destination,
+              length: estimate.length
+            }
+            break
           }
           else {
             minutes.push(estimate.minutes)
@@ -706,6 +723,8 @@ function selectionSwitched (stationState, platformState) {
             }
           }
         }
+        if (isCurrentTrain) break
+
         // some names are too long so we shorten
         if (destination === 'Dublin/Pleasanton') {
           destination = 'Dubln Plstn'
@@ -723,8 +742,12 @@ function selectionSwitched (stationState, platformState) {
       }
     }
 
-    screenData = newScreenData
-    setUpScreen ()
+    if (isCurrentTrain) {
+      setUpCurrentScreen(isCurrentTrain.destination, isCurrentTrain.length)
+    } else {
+      screenData = newScreenData
+      setUpScreen()
+    }
   })
 }
 
