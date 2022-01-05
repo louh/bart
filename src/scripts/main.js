@@ -379,7 +379,7 @@ function setUpCurrentScreen (data) {
 
   screenRefreshTimeout = window.setTimeout(function () {
     selectionSwitched(stationState, platformState)
-  }, 5000)
+  }, 6000)
 }
 
 function showArrivalTimes (data, context) {
@@ -501,7 +501,14 @@ function drawLargeText (screen, string) {
     var width = dots[i].length
     // Get X position to center the text
     var posX = Math.floor((DSU_HORIZONTAL_RESOLUTION - width) / 2)
-    screen = drawDotsOnScreen(screen, dots[i], posX, 4 + (16 * i))
+
+    // one line
+    if (dots.length === 1) {
+      screen = drawDotsOnScreen(screen, dots[i], posX, 4 + 10)
+    } else {
+      // multiline
+      screen = drawDotsOnScreen(screen, dots[i], posX, 4 + (16 * i))
+    }
   }
   return screen
 }
@@ -544,6 +551,9 @@ function getDots (string) {
 function stringToArrayOfCodePoints (string) {
   var array = []
   string = string.trim().toUpperCase()
+
+  // add spaces around slashes to help with spacing
+  string = string.replace('/', ' / ')
 
   // Split the string on spaces
   var words = string.split(' ')
