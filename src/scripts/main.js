@@ -648,7 +648,7 @@ function getDevicePixelRatio (ctx) {
 
 function switchPlatform (id) {
   var labelEl = document.getElementById('platform-id')
-  labelEl.src = `platform${id}.svg`
+  labelEl.src = `src/images/platform${id}.svg`
 
   var buttons = document.querySelectorAll('.controls-platform button')
   for (var i = 0; i < buttons.length; i++) {
