@@ -719,7 +719,6 @@ function getApiUrl (station, platform) {
   return `https://api.bart.gov/api/etd.aspx?cmd=etd&orig=${station}&plat=${platform}&key=${BART_API_KEY}&json=y`
 }
 
-// Experimental
 function selectionSwitched (stationState, platformState) {
   window.clearTimeout(screenRefreshTimeout)
   var buttons = document.querySelectorAll('.controls-platform button')
@@ -733,7 +732,12 @@ function selectionSwitched (stationState, platformState) {
     return
   }
 
-  // disable stations that are not present
+  // Signage
+  var signEl = document.querySelector('#sign img')
+  var signImgUrl = `src/images/stations/${stationState}.svg`
+  signEl.src = signImgUrl
+
+  // disable platforms that are not present
   var stationData = STATIONS[stationState]
   var numPlatforms = Number.parseInt(stationData.platforms, 10)
   for (var i = 0; i < buttons.length; i++) {

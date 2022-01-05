@@ -169,3 +169,29 @@ h3 {
   height: 36px;
   background-color: #18100b;
 }
+
+#signage-container {
+  position: absolute;
+  bottom: 20%;
+  left: 0;
+  width: 100%;
+  text-align: center;
+}
+
+#sign {
+  height: 42px;
+  padding: 0 140px;
+  min-width: 600px;
+  max-width: 750px;
+  background-color: #121111;
+  border-top: 3px solid #121111;
+  border-bottom: 3px solid #100e0e;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.station-name {
+  height: 18px;
+  filter: invert(.8);
+}
