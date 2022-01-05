@@ -25,6 +25,10 @@ const DSU_LED_OFF_COLOR = 'hsla(0, 100%, 10%, 1)'
 
 const BLINK_TIME = 500
 
+// BART API keys are free. See here for more info.
+// https://www.bart.gov/schedules/developers/api
+const BART_API_KEY = 'QXPS-PGQY-9JIT-DWEI'
+
 const STATIONS = {
   "12th": {
     "id": "12th",
@@ -710,10 +714,6 @@ document.getElementById('station').addEventListener('change', function (event) {
   stationState = station
   selectionSwitched(stationState, platformState)
 })
-
-// BART API keys are free. This is currently using the "no strings attached key"
-// https://www.bart.gov/schedules/developers/api
-const BART_API_KEY = 'MW9S-E7SL-26DU-VV8V'
 
 function getApiUrl (station, platform) {
   return `https://api.bart.gov/api/etd.aspx?cmd=etd&orig=${station}&plat=${platform}&key=${BART_API_KEY}&json=y`
