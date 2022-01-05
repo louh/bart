@@ -340,7 +340,7 @@ var fantasyData = [
   {
     destination: 'Healdsburg',
     trainLength: 7,
-    arrivesIn: 16
+    arrivesIn: [16]
   }
 ]
 
@@ -384,8 +384,6 @@ function setUpCurrentScreen (data) {
 
 function showArrivalTimes (data, context) {
   var screen = createArrivalTimesScreen(data)
-  var duration = screen.length + DSU_VERTICAL_RESOLUTION
-  var count = 0
 
   window.clearInterval(interval)
   drawScreen(screen, context)
@@ -419,37 +417,39 @@ function createArrivalTimesScreen (data) {
   var yEntryMargin = 7
 
   // Turn on the LEDs for this screen buffer.
-  // NOTE: This
   data.forEach(function (datum, index) {
     // Calculate the Y position for this set of data
     var yPosition = yTopMargin + (((yLineHeight * 2) + yEntryMargin) * index)
 
-    // datum.arrivesIn could be a number, a string, or an array of numbers.
-    // Times should be in this format: 'A, B'
-    //  1         --> '1'
-    // '1'        --> '1'
-    // [1, 2]     --> '1, 2'
-    // ['1', '2'] --> '1, 2'
-    // '1, 2'     --> '1, 2'
-    // '1,2'      --> '1, 2'
-    // Note: remove the space after the comma for now.
-    // the space appears if the second number is 1-digit, e.g
-    // '1, 3 MIN'
-    // but not if the second number is 2 digits, e.g.
-    // '5,15 MIN'
-    // this aligns the comma on the display
-    var arrival = datum.arrivesIn.toString()//.replace(/,(?=\S)/, ', ')
+    // datum.arrivesIn is an array of numbers.
+    // It can be of any length but only display 2 arrival times
+    // Single digit numbers are formatted with left-padding
+    // of one space. This aligns the comma on the display
+    // Examples
+    // [1, 2]  --> '1, 2 MIN'
+    // [1, 10] --> '1,10 MIN'
+    var arrival = datum.arrivesIn.reduce((str, val, i) => {
+      var numString = val.toString().padStart(2, ' ')
+      // only two items
+      if (i > 2) return str
+      // add a comma after subsequent times
+      if (i > 0) {
+        str += ',' + numString
+      } else {
+        str += numString
+      }
+      return str
+    }, '')
 
     // Write the dots to the screen buffer.
     // Destination
     screen = drawLineOnScreen(screen, datum.destination, xMargin, yPosition)
     // Arrival times, same line as destination, aligned right
-    screen = drawLineOnScreen(screen, arrival + ' min', xMargin, yPosition, {align: 'right' })
+    screen = drawLineOnScreen(screen, arrival + ' min', xMargin, yPosition, { align: 'right' })
     // Length of car train, new line below destination
     screen = drawLineOnScreen(screen, datum.trainLength.toString() + ' car train', xMargin, yPosition + yLineHeight)
 
     // There is no protection against words that go on too long.
-    //
   })
 
   return screen
