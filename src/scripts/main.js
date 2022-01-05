@@ -18,10 +18,12 @@
  */
 'use strict'
 
-var DSU_HORIZONTAL_RESOLUTION = 180
-var DSU_VERTICAL_RESOLUTION = 50
-var DSU_LED_ON_COLOR = 'hsla(0, 100%, 50%, 1)'
-var DSU_LED_OFF_COLOR = 'hsla(0, 100%, 10%, 1)'
+const DSU_HORIZONTAL_RESOLUTION = 180
+const DSU_VERTICAL_RESOLUTION = 50
+const DSU_LED_ON_COLOR = 'hsla(0, 100%, 50%, 1)'
+const DSU_LED_OFF_COLOR = 'hsla(0, 100%, 10%, 1)'
+
+const BLINK_TIME = 500
 
 const STATIONS = {
   "12th": {
@@ -342,34 +344,42 @@ var fantasyData = [
   }
 ]
 
-var interval
-var screenInterval
-var screenRefreshTimeout
+let interval
+let screenInterval
+let screenRefreshTimeout
 
 function setUpScreen () {
   window.clearInterval(interval)
   window.clearInterval(screenInterval)
-  showArrivalTimes(screenData, context)
-  
-  // screenInterval = window.setInterval(function () {
-  //   showArrivalTimes(screenData, context)
-  // }, screenData.length * 10000)
+
+  // Brief blink
+  drawEmptyScreen()
+
+  screenRefreshTimeout = window.setTimeout(function () {
+    showArrivalTimes(screenData, context)
+  }, BLINK_TIME)
 
   if (screenData.length > 0) {
     screenRefreshTimeout = window.setTimeout(function () {
       selectionSwitched(stationState, platformState)
-    }, screenData.length * 9500)
+    }, Math.max(2 * 9500, screenData.length * 9500))
   }
 }
 
 function setUpCurrentScreen (data) {
   window.clearInterval(interval)
   window.clearInterval(screenInterval)
-  showCurrentTrain(data)
+
+  // Brief blink
+  drawEmptyScreen()
+
+  screenRefreshTimeout = window.setTimeout(function () {
+    showCurrentTrain(data)
+  }, BLINK_TIME)
 
   screenRefreshTimeout = window.setTimeout(function () {
     selectionSwitched(stationState, platformState)
-  }, 20000)
+  }, 5000)
 }
 
 function showArrivalTimes (data, context) {
@@ -475,6 +485,11 @@ function createEmptyScreenBuffer (vert = DSU_VERTICAL_RESOLUTION) {
   return buffer.map(function () {
     return Array(DSU_HORIZONTAL_RESOLUTION).fill(0)
   })
+}
+
+function drawEmptyScreen () {
+  var screen = createEmptyScreenBuffer(DSU_VERTICAL_RESOLUTION)
+  drawScreen(screen, context)
 }
 
 function drawLargeText (screen, string) {
