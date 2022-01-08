@@ -280,25 +280,34 @@ const STATIONS = {
 var canvas = document.getElementById('led')
 var context = canvas.getContext('2d')
 
-// Gets the current width and height from browser layout engine
-var canvasWidth = Math.floor(canvas.getBoundingClientRect().width)
-var canvasHeight = Math.floor(canvas.getBoundingClientRect().height)
+var canvasWidth, canvasHeight, ratio, ledWidth, ledHeight, ledRadius
 
-// Fixes rounding issues later
-canvas.style.width = canvasWidth + 'px'
-canvas.style.height = canvasHeight + 'px'
+window.addEventListener('load', function () {
+  calculateCanvasVars()
+  selectionSwitched(stationState, platformState)
+})
 
-// Sets canvas to the proper dimensions and at the correct pixel density
-var ratio = getDevicePixelRatio(context)
-canvas.width = canvasWidth * ratio
-canvas.height = canvasHeight * ratio
-context.scale(ratio, ratio)
+function calculateCanvasVars () {
+  // Gets the current width and height from browser layout engine
+  canvasWidth = Math.floor(canvas.getBoundingClientRect().width)
+  canvasHeight = Math.floor(canvas.getBoundingClientRect().height)
 
-// Figure out how big to display an LED light at
-// It will never be less than 1 pixel
-var ledWidth = canvasWidth / DSU_HORIZONTAL_RESOLUTION
-var ledHeight = canvasHeight / DSU_VERTICAL_RESOLUTION
-var ledRadius = Math.max(Math.min(0.65 * ledWidth, 0.65 * ledHeight), 1) / 2
+  // Fixes rounding issues later
+  canvas.style.width = canvasWidth + 'px'
+  canvas.style.height = canvasHeight + 'px'
+
+    // Sets canvas to the proper dimensions and at the correct pixel density
+  ratio = getDevicePixelRatio(context)
+  canvas.width = canvasWidth * ratio
+  canvas.height = canvasHeight * ratio
+  context.scale(ratio, ratio)
+
+  // Figure out how big to display an LED light at
+  // It will never be less than 1 pixel
+  ledWidth = canvasWidth / DSU_HORIZONTAL_RESOLUTION
+  ledHeight = canvasHeight / DSU_VERTICAL_RESOLUTION
+  ledRadius = Math.max(Math.min(0.65 * ledWidth, 0.65 * ledHeight), 1) / 2
+}
 
 // draw random dots
 // for (var i = 0; i < DSU_HORIZONTAL_RESOLUTION * DSU_VERTICAL_RESOLUTION; i++) {
@@ -816,5 +825,3 @@ function selectionSwitched (stationState, platformState) {
     }
   })
 }
-
-selectionSwitched(stationState, platformState)
