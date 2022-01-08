@@ -224,8 +224,8 @@ h3 {
 #sign {
   height: 42px;
   padding: 0 140px;
-  min-width: 600px;
-  max-width: 750px;
+  min-width: 540px;
+  max-width: 720px;
   background-color: #121111;
   border-top: 3px solid #121111;
   border-bottom: 3px solid #100e0e;
