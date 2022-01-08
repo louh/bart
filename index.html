@@ -3,6 +3,7 @@
 <head>
   <title>daktronics</title>
   <link rel="stylesheet" href="src/styles/styles.css">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
 
   <!-- Primary Meta Tags -->
   <title>BART LED</title>
@@ -35,15 +36,6 @@
   <div id="sign">
     <img src="src/images/stations/19th.svg" class="station-name" />
   </div>
-</div>
-
-<div class="dsu-wrapper">
-  <div class="dsu-container">
-    <img src="src/images/dsu.svg" alt="">
-    <img src="src/images/platform1.svg" alt="" class="platform-label" id="platform-id">
-    <canvas id="led"></canvas>
-  </div>
-  <p id="error">No data for selected station & platform, try another one!</p>
 </div>
 
 <div class="controls">
@@ -115,6 +107,15 @@
 </div>
 <div id="about">
   Built by <a href="https://louhuang.com">Lou Huang</a>. Not affiliated with <a href="https://www.bart.gov/">BART</a>. </a><a href="https://github.com/louh/bart">Source code.</a>
+</div>
+
+<div class="dsu-wrapper">
+  <div class="dsu-container">
+    <img src="src/images/dsu.svg" alt="">
+    <img src="src/images/platform1.svg" alt="" class="platform-label" id="platform-id">
+    <canvas id="led"></canvas>
+  </div>
+  <p id="error">No data for selected station & platform, try another one!</p>
 </div>
 
 <script src="src/scripts/vendor/polyfill.array.fill.js"></script>

@@ -24,11 +24,19 @@ body {
   padding: 5vw;
   box-sizing: border-box;
   flex-direction: column;
+  overflow: hidden;
+}
+
+@media screen and (max-width: 800px) {
+  .dsu-wrapper {
+    padding: 3vw;
+  }
 }
 
 .dsu-container {
-  width: 800px;
-  height: 280px;
+  max-width: 800px;
+  max-height: 280px;
+  width: 100%;
   position: relative;
   background: #1f1814;
   border-radius: 7px;
@@ -62,6 +70,13 @@ body {
   color: white;
   display: flex;
   padding: 0 15vw;
+}
+
+@media screen and (max-width: 800px) and (orientation: portrait) {
+  .controls {
+    flex-direction: column;
+    height: 200px;
+  }
 }
 
 .controls-platform, .controls-station {
@@ -125,11 +140,20 @@ h3 {
   opacity: 0.4;
 }
 
+@media screen and (max-width: 800px) {
+  #about {
+    right: 0;
+    width: 100%;
+    text-align: center;
+  }
+}
+
 #about a,
 #about a:visited,
 #about a:hover,
 #about a:active {
   color: white;
+  text-decoration: underline;
 }
 
 #supports {
@@ -161,6 +185,13 @@ h3 {
   left: calc(50% + 250px - 15px);
 }
 
+@media screen and (max-width: 800px) {
+  #pylon1,
+  #pylon2 {
+    display: none;
+  }
+}
+
 #roof {
   position: absolute;
   top: 0;
@@ -176,6 +207,18 @@ h3 {
   left: 0;
   width: 100%;
   text-align: center;
+}
+
+@media screen and (max-width: 800px) {
+  #signage-container {
+    display: none;
+  }
+}
+
+@media screen and (max-height: 600px) {
+  #signage-container {
+    display: none;
+  }
 }
 
 #sign {
